@@ -94,3 +94,8 @@ jobs:
           $filePath = "helm/git-gist-app-chart/values.yaml"
           (Get-Content $filePath) -replace 'tag: "latest"', 'tag: "latest' + $env:GITHUB_RUN_NUMBER + '"' | Set-Content $filePath
           
+      # Step3: Deploy to Minikube using Helm
+      - name: Deploy to Minikube using Helm
+        shell: powershell
+        run: |
+          helm upgrade --install git-gist-app helm/git-gist-app-chart --namespace git-gist-ns --set image.repository=${{ secrets.DOCKER_HUB_USERNAME }}/git-gist-app --set image.tag=latest${{github.run_number}} --wait
